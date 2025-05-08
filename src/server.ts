@@ -36,6 +36,7 @@ app.use(express.json())
 app.use('/api/auth', userRoutes)
 
 // Router para imagenes
-app.use('/uploads', express.static(path.join(__dirname, '..', 'dist', 'public', 'uploads')));
+
+app.use('/uploads', cors(corsConfig), express.static(path.join(__dirname, '..', 'public', 'uploads')));
 
 export default app
