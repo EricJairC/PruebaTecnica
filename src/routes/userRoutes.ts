@@ -133,7 +133,7 @@ router.post('/check-password',
 )
 
 // Visualizar usuarios
-// Obtener todos los proyectos
+// Obtener todos los usuarios
 router.get('/', 
     UserController.getAllUsers
 )

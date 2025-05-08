@@ -6,6 +6,7 @@ import { generateToken } from '../utils/token'
 import { AuthEmail } from '../emails/AuthEmail'
 import { DateTime } from 'luxon'
 import { generateJWT } from '../utils/jwt'
+import path from 'path'
 
 export class UserController {
     static createAccount = async (req : Request, res : Response) => {
@@ -342,9 +343,10 @@ export class UserController {
         }
     }
 
-    // Actualizar un proyecto
+    // Actualizar un usuario
     static updatedUser = async (req : Request, res: Response) => {
         try {
+            console.log(path.join(__dirname, '..', 'public', 'uploads')); 
             const { idUsuario } = req.params;
 
             const idAdministrador = +req.user.idUsuario
