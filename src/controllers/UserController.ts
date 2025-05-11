@@ -336,7 +336,7 @@ export class UserController {
     static getAllUsers = async (req : Request, res: Response) => {
         try {    
             const usuarios = await Usuario.findAll({
-                where: { confirmado: 1 },
+                where: { confirmado: true },
                 attributes: { exclude: ['usuarioPassword', 'confirmado'] },
             });
     
