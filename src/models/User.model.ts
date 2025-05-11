@@ -67,6 +67,12 @@ export class Usuario extends Model {
         allowNull: true,
     })
     declare usuarioUltimaConexion: Date;
+
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false,
+    })
+    declare admin: boolean
 }
 
 export default Usuario;

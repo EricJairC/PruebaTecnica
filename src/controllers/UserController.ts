@@ -67,6 +67,14 @@ export class UserController {
             const user = await Usuario.findByPk(tokenExists.idUsuario)
             user.confirmado = true
 
+            const admin = await Usuario.findOne({
+                where: { confirmado: true, admin: true }
+            });
+
+            if (!admin) {
+                user.admin = true;
+            }
+
             await user.save()
             await tokenExists.destroy()
             res.send('Cuenta confirmada correctamente')
@@ -249,6 +257,14 @@ export class UserController {
     }
 
     static user = async (req: Request, res: Response) => {
+        // Buscar al primer usuario confirmado
+        const primerConfirmado = await Usuario.findOne({
+        where: { confirmado: true },
+        order: [['idUsuario', 'ASC']]
+        });
+
+        const isAdmin = primerConfirmado?.idUsuario === req.user.idUsuario;
+
         res.json(req.user)
     }
 
@@ -320,6 +336,7 @@ export class UserController {
     static getAllUsers = async (req : Request, res: Response) => {
         try {    
             const usuarios = await Usuario.findAll({
+                where: { confirmado: 1 },
                 attributes: { exclude: ['usuarioPassword', 'confirmado'] },
             });
     
@@ -346,7 +363,6 @@ export class UserController {
     // Actualizar un usuario
     static updatedUser = async (req : Request, res: Response) => {
         try {
-            console.log(path.join(__dirname, '..', 'public', 'uploads')); 
             const { idUsuario } = req.params;
 
             const idAdministrador = +req.user.idUsuario
@@ -354,12 +370,18 @@ export class UserController {
             const usuarioImagen = req.file?.filename
 
             const user = await Usuario.findByPk(idUsuario);
+
             if (!user) {
                 res.status(404).json({ error: 'Usuario no encontrado' });
                 return
             }
 
-            if(idAdministrador === +idUsuario || idAdministrador === 1){
+            const primerUsuarioConfirmado = await Usuario.findOne({
+                where: { confirmado: true },
+                order: [['idUsuario', 'ASC']],
+            });
+
+            if(idAdministrador === +idUsuario || primerUsuarioConfirmado){
                 if (usuarioImagen) {
                     user.usuarioImagen = `/uploads/${usuarioImagen}` 
                 }
